@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="사주 오행을 포켓몬 타입으로 바꿔보는 팬메이드 타입 매칭 미니게임"
+    />
+    <title>생년월일시로 보는 나의 포켓몬</title>
+    <link rel="stylesheet" href="./css/reset.css" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"
+      defer
+    ></script>
+    <script type="module" src="./js/main.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <main class="app-main" aria-labelledby="appTitle">
+        <section class="intro-section card" aria-labelledby="appTitle">
+          <p class="eyebrow">UNOFFICIAL FAN MINI GAME</p>
+          <h1 id="appTitle">생년월일시로 보는 나의 포켓몬</h1>
+          <p class="intro-copy">
+            사주 오행을 포켓몬 타입으로 바꿔보는 팬메이드 타입 매칭
+          </p>
+        </section>
+
+        <section class="form-section card" aria-labelledby="birthFormTitle">
+          <div class="section-heading">
+            <p class="eyebrow">FIVE ELEMENTS MATCH</p>
+            <h2 id="birthFormTitle">생년월일시 입력</h2>
+          </div>
+
+          <form id="birthForm" class="birth-form" novalidate>
+            <label class="field-group" for="birthYear">
+              <span>생년</span>
+              <input
+                id="birthYear"
+                name="birthYear"
+                type="number"
+                inputmode="numeric"
+                min="1900"
+                max="2100"
+                placeholder="1999"
+                required
+              />
+            </label>
+
+            <label class="field-group" for="birthMonth">
+              <span>생월</span>
+              <select id="birthMonth" name="birthMonth" required>
+                <option value="">월 선택</option>
+                <option value="1">1월</option>
+                <option value="2">2월</option>
+                <option value="3">3월</option>
+                <option value="4">4월</option>
+                <option value="5">5월</option>
+                <option value="6">6월</option>
+                <option value="7">7월</option>
+                <option value="8">8월</option>
+                <option value="9">9월</option>
+                <option value="10">10월</option>
+                <option value="11">11월</option>
+                <option value="12">12월</option>
+              </select>
+            </label>
+
+            <label class="field-group" for="birthDay">
+              <span>생일</span>
+              <select id="birthDay" name="birthDay" required>
+                <option value="">일 선택</option>
+                <option value="1">1일</option>
+                <option value="2">2일</option>
+                <option value="3">3일</option>
+                <option value="4">4일</option>
+                <option value="5">5일</option>
+                <option value="6">6일</option>
+                <option value="7">7일</option>
+                <option value="8">8일</option>
+                <option value="9">9일</option>
+                <option value="10">10일</option>
+                <option value="11">11일</option>
+                <option value="12">12일</option>
+                <option value="13">13일</option>
+                <option value="14">14일</option>
+                <option value="15">15일</option>
+                <option value="16">16일</option>
+                <option value="17">17일</option>
+                <option value="18">18일</option>
+                <option value="19">19일</option>
+                <option value="20">20일</option>
+                <option value="21">21일</option>
+                <option value="22">22일</option>
+                <option value="23">23일</option>
+                <option value="24">24일</option>
+                <option value="25">25일</option>
+                <option value="26">26일</option>
+                <option value="27">27일</option>
+                <option value="28">28일</option>
+                <option value="29">29일</option>
+                <option value="30">30일</option>
+                <option value="31">31일</option>
+              </select>
+            </label>
+
+            <label class="field-group" for="birthHour">
+              <span>태어난 시간</span>
+              <select id="birthHour" name="birthHour">
+                <option value="unknown" data-range-label="시간 모름" data-hour-value="0">
+                  시간 모름
+                </option>
+                <option value="子" data-range-label="23:00~00:59" data-hour-value="23">
+                  23:00~00:59 / 子
+                </option>
+                <option value="丑" data-range-label="01:00~02:59" data-hour-value="1">
+                  01:00~02:59 / 丑
+                </option>
+                <option value="寅" data-range-label="03:00~04:59" data-hour-value="3">
+                  03:00~04:59 / 寅
+                </option>
+                <option value="卯" data-range-label="05:00~06:59" data-hour-value="5">
+                  05:00~06:59 / 卯
+                </option>
+                <option value="辰" data-range-label="07:00~08:59" data-hour-value="7">
+                  07:00~08:59 / 辰
+                </option>
+                <option value="巳" data-range-label="09:00~10:59" data-hour-value="9">
+                  09:00~10:59 / 巳
+                </option>
+                <option value="午" data-range-label="11:00~12:59" data-hour-value="11">
+                  11:00~12:59 / 午
+                </option>
+                <option value="未" data-range-label="13:00~14:59" data-hour-value="13">
+                  13:00~14:59 / 未
+                </option>
+                <option value="申" data-range-label="15:00~16:59" data-hour-value="15">
+                  15:00~16:59 / 申
+                </option>
+                <option value="酉" data-range-label="17:00~18:59" data-hour-value="17">
+                  17:00~18:59 / 酉
+                </option>
+                <option value="戌" data-range-label="19:00~20:59" data-hour-value="19">
+                  19:00~20:59 / 戌
+                </option>
+                <option value="亥" data-range-label="21:00~22:59" data-hour-value="21">
+                  21:00~22:59 / 亥
+                </option>
+              </select>
+            </label>
+
+            <details class="manual-elements-panel">
+              <summary>오행 직접 보정</summary>
+              <p>외부 만세력 앱과 비교할 때만 사용하세요. 비워두면 자동 계산을 사용합니다.</p>
+              <div class="manual-elements-grid">
+                <label for="manualWood">
+                  <span>木</span>
+                  <input id="manualWood" name="manualWood" type="number" inputmode="numeric" min="0" max="8" />
+                </label>
+                <label for="manualFire">
+                  <span>火</span>
+                  <input id="manualFire" name="manualFire" type="number" inputmode="numeric" min="0" max="8" />
+                </label>
+                <label for="manualEarth">
+                  <span>土</span>
+                  <input id="manualEarth" name="manualEarth" type="number" inputmode="numeric" min="0" max="8" />
+                </label>
+                <label for="manualMetal">
+                  <span>金</span>
+                  <input id="manualMetal" name="manualMetal" type="number" inputmode="numeric" min="0" max="8" />
+                </label>
+                <label for="manualWater">
+                  <span>水</span>
+                  <input id="manualWater" name="manualWater" type="number" inputmode="numeric" min="0" max="8" />
+                </label>
+              </div>
+            </details>
+
+            <button class="primary-button" type="submit">결과 보기</button>
+          </form>
+        </section>
+
+        <section
+          id="loadingSection"
+          class="loading-section card"
+          aria-live="polite"
+          hidden
+        >
+          <p class="eyebrow">LOADING POKEAPI DATA</p>
+          <div class="dex-scanner" aria-hidden="true">
+            <span></span>
+          </div>
+          <p id="loadingText">결과를 준비하는 중입니다...</p>
+        </section>
+
+        <section
+          id="resultSection"
+          class="result-section card"
+          aria-labelledby="resultTitle"
+          hidden
+        >
+          <p class="eyebrow">YOUR MATCH</p>
+          <h2 id="resultTitle">오행 결과</h2>
+          <div id="resultCard" class="result-card">
+            나중에 포켓몬 카드가 들어갈 공간입니다.
+          </div>
+        </section>
+
+        <section id="messageSection" class="message-section" aria-live="polite">
+          <p id="messageText">
+            양력 생년월일시를 입력하면 오행 기반 타입 매칭 결과를 준비합니다.
+          </p>
+        </section>
+      </main>
+
+      <footer class="app-footer">
+        <p>본 사이트는 팬메이드 프로젝트이며, 공식 포켓몬 콘텐츠가 아닙니다.</p>
+        <p>운세 해석이 아닌 오행 기반 타입 매칭 놀이입니다.</p>
+      </footer>
+    </div>
+  </body>
+</html>

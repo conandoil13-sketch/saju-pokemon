@@ -226,7 +226,7 @@ async function handleSubmit(event) {
         showLoading(`포켓몬 도감을 불러오는 중입니다... ${done}/${total}`);
       },
     });
-    const matchResult = matchPokemon(typeResult, inputData, pokemonPool);
+    const matchResult = matchPokemon(typeResult, inputData, pokemonPool, sajuResult);
     const compatibilityResult = getCompatibilityPokemon(typeResult, inputData, pokemonPool);
 
     hideLoading();

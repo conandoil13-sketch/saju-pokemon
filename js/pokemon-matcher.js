@@ -1,5 +1,7 @@
 import { isSameTypeCombo, isUnusedTypeCombination } from "../data/type-combinations.js";
 
+const ELEMENT_SEED_ORDER = ["木", "火", "土", "金", "水"];
+
 function getRequestedTypes(typeResult) {
   if (typeResult.primaryType === typeResult.secondaryType) {
     return [typeResult.primaryType];
@@ -8,20 +10,34 @@ function getRequestedTypes(typeResult) {
   return [typeResult.primaryType, typeResult.secondaryType];
 }
 
-export function hashSeed(inputData) {
-  const seedString = `${inputData.year}${inputData.month}${inputData.day}${inputData.hourUnknown ? 0 : inputData.hourValue}`;
+function getElementSeedPart(sajuResult) {
+  if (!sajuResult?.elements) {
+    return "elements:none";
+  }
 
-  return [...seedString].reduce((hash, char) => {
-    return hash + char.charCodeAt(0);
-  }, 0);
+  return ELEMENT_SEED_ORDER.map((element) => `${element}${sajuResult.elements[element] ?? 0}`).join("-");
 }
 
-function pickSeededCandidate(candidates, inputData) {
-  const index = hashSeed(inputData) % candidates.length;
+export function hashSeed(inputData, sajuResult = null) {
+  const seedString = [
+    inputData.year,
+    inputData.month,
+    inputData.day,
+    inputData.hourUnknown ? 0 : inputData.hourValue,
+    getElementSeedPart(sajuResult),
+  ].join("|");
+
+  return [...seedString].reduce((hash, char) => {
+    return Math.imul(hash, 31) + char.charCodeAt(0) >>> 0;
+  }, 2166136261);
+}
+
+function pickSeededCandidate(candidates, inputData, sajuResult) {
+  const index = hashSeed(inputData, sajuResult) % candidates.length;
   return candidates[index];
 }
 
-export function matchPokemon(typeResult, inputData, pokemonPool) {
+export function matchPokemon(typeResult, inputData, pokemonPool, sajuResult = null) {
   const requestedTypes = getRequestedTypes(typeResult);
   const usedFallback = Boolean(pokemonPool.usedFallback);
   const dataSource = pokemonPool.dataSource ?? (usedFallback ? "fallback" : "api");
@@ -32,7 +48,7 @@ export function matchPokemon(typeResult, inputData, pokemonPool) {
   if (candidates.length > 0) {
     return {
       status: "matched",
-      pokemon: pickSeededCandidate(candidates, inputData),
+      pokemon: pickSeededCandidate(candidates, inputData, sajuResult),
       candidatesCount: candidates.length,
       isUnusedCombination: false,
       usedFallback,
@@ -65,6 +81,6 @@ export function matchPokemon(typeResult, inputData, pokemonPool) {
   };
 }
 
-export function matchPokemonByProfile(typeProfile, pokemonDataset, seedSource) {
-  return matchPokemon(typeProfile, seedSource, pokemonDataset);
+export function matchPokemonByProfile(typeProfile, pokemonDataset, seedSource, sajuResult = null) {
+  return matchPokemon(typeProfile, seedSource, pokemonDataset, sajuResult);
 }

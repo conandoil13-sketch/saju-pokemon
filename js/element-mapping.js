@@ -130,12 +130,40 @@ function getTypeByRelation(baseElement, partnerElement) {
   return TYPE_BY_ELEMENT_RELATION[baseElement][partnerElement] ?? ELEMENT_TYPE_GROUPS[baseElement][0];
 }
 
+function hashString(seedString) {
+  return [...seedString].reduce((hash, char) => {
+    return Math.imul(hash, 31) + char.charCodeAt(0) >>> 0;
+  }, 2166136261);
+}
+
+function getResidualElementSeed(primaryElement, secondaryElement, elements) {
+  return ELEMENT_ORDER.filter((element) => {
+    return element !== primaryElement && element !== secondaryElement;
+  })
+    .map((element) => `${element}${elements[element] ?? 0}`)
+    .join("|");
+}
+
+function pickTypeFromElementGroup(element, seedString) {
+  const typeGroup = ELEMENT_TYPE_GROUPS[element];
+  return typeGroup[hashString(seedString) % typeGroup.length];
+}
+
+function getSecondaryTypeByResidualElements(primaryElement, secondaryElement, sajuResult) {
+  const residualSeed = getResidualElementSeed(primaryElement, secondaryElement, sajuResult.elements);
+
+  return pickTypeFromElementGroup(
+    secondaryElement,
+    `${primaryElement}/${secondaryElement}|${residualSeed}`,
+  );
+}
+
 export function getPokemonTypeFromElements(sajuResult) {
   const rankedElements = getRankedElements(sajuResult);
   const primaryElement = rankedElements[0];
   let secondaryElement = rankedElements[1] ?? primaryElement;
   let primaryType = getTypeByRelation(primaryElement, secondaryElement);
-  let secondaryType = getTypeByRelation(secondaryElement, primaryElement);
+  let secondaryType = getSecondaryTypeByResidualElements(primaryElement, secondaryElement, sajuResult);
   const notes = [];
   const isSameElementDominant = isDominantSameElement(primaryElement, sajuResult);
 

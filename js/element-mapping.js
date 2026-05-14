@@ -144,45 +144,75 @@ function getResidualElementSeed(primaryElement, secondaryElement, elements) {
     .join("|");
 }
 
+function getElementDistributionSeed(elements) {
+  return ELEMENT_ORDER.map((element) => `${element}${elements[element] ?? 0}`).join("|");
+}
+
 function pickTypeFromElementGroup(element, seedString) {
   const typeGroup = ELEMENT_TYPE_GROUPS[element];
   return typeGroup[hashString(seedString) % typeGroup.length];
 }
 
-function getSecondaryTypeByResidualElements(primaryElement, secondaryElement, sajuResult) {
-  const residualSeed = getResidualElementSeed(primaryElement, secondaryElement, sajuResult.elements);
+function getTypeByElementInfluence(element, partnerElement, role, sajuResult) {
+  const residualSeed = getResidualElementSeed(element, partnerElement, sajuResult.elements);
+  const distributionSeed = getElementDistributionSeed(sajuResult.elements);
+  const relationType = getTypeByRelation(element, partnerElement);
 
   return pickTypeFromElementGroup(
-    secondaryElement,
-    `${primaryElement}/${secondaryElement}|${residualSeed}`,
+    element,
+    `${role}|${element}/${partnerElement}|${relationType}|${distributionSeed}|${residualSeed}`,
   );
+}
+
+function isSingleTypeFocused(primaryElement, secondaryElement, sajuResult) {
+  const primaryCount = sajuResult.elements[primaryElement] ?? 0;
+  const secondaryCount = sajuResult.elements[secondaryElement] ?? 0;
+  const focusThreshold = sajuResult.usedCharacterCount >= 8 ? 4 : 3;
+
+  return primaryCount >= focusThreshold && primaryCount - secondaryCount >= 2;
 }
 
 export function getPokemonTypeFromElements(sajuResult) {
   const rankedElements = getRankedElements(sajuResult);
   const primaryElement = rankedElements[0];
   let secondaryElement = rankedElements[1] ?? primaryElement;
-  let primaryType = getTypeByRelation(primaryElement, secondaryElement);
-  let secondaryType = getSecondaryTypeByResidualElements(primaryElement, secondaryElement, sajuResult);
+  let primaryType = getTypeByElementInfluence(primaryElement, secondaryElement, "primary", sajuResult);
+  let secondaryType = getTypeByElementInfluence(secondaryElement, primaryElement, "secondary", sajuResult);
   const notes = [];
   const isSameElementDominant = isDominantSameElement(primaryElement, sajuResult);
+  const isSingleType = isSingleTypeFocused(primaryElement, secondaryElement, sajuResult);
 
-  if (isSameElementDominant) {
+  if (isSingleType) {
+    secondaryElement = primaryElement;
+    primaryType = pickTypeFromElementGroup(
+      primaryElement,
+      `single|${primaryElement}|${getElementDistributionSeed(sajuResult.elements)}`,
+    );
+    secondaryType = primaryType;
+    notes.push(
+      `${getElementKoName(primaryElement)} 오행이 강하게 두드러져 단일 타입 매칭이 적용되었습니다.`,
+    );
+  } else if (isSameElementDominant) {
     secondaryElement = primaryElement;
     [primaryType, secondaryType] = SAME_ELEMENT_DOMINANT_TYPES[primaryElement];
     notes.push(
       `${getElementKoName(primaryElement)} 오행이 강하게 편중되어 같은 오행 내부 타입 조합이 적용되었습니다.`,
     );
   }
+  const typeNamesKo =
+    primaryType === secondaryType
+      ? [TYPE_KO_NAMES[primaryType]]
+      : [TYPE_KO_NAMES[primaryType], TYPE_KO_NAMES[secondaryType]];
 
   return {
     primaryElement,
     secondaryElement,
     primaryType,
     secondaryType,
-    typeNamesKo: [TYPE_KO_NAMES[primaryType], TYPE_KO_NAMES[secondaryType]],
+    typeNamesKo,
     elementLabel: `${getElementKoName(primaryElement)}${getElementKoName(secondaryElement)}형`,
     isSameElementDominant,
+    isSingleType,
     notes,
   };
 }

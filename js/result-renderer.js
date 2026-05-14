@@ -108,6 +108,10 @@ function getElementDescription(typeResult, matchResult) {
   const secondaryTrait = getTypePersonality(typeResult.secondaryType);
   const pokemonName = getPokemonDisplayName(matchResult);
 
+  if (typeResult.primaryType === typeResult.secondaryType) {
+    return `당신의 타입 에너지는 ${primaryTypeName} 단일 타입으로 선명하게 모였습니다. ${primaryTrait}이 특히 강하게 나타나고, 그중에서도 ${pokemonName}와 가장 비슷한 배틀 감각을 가진 결과로 매칭되었습니다.`;
+  }
+
   if (typeResult.primaryElement === typeResult.secondaryElement) {
     return `당신의 타입 에너지는 ${primaryTypeName}/${secondaryTypeName} 계열에 강하게 몰려 있습니다. ${primaryTrait}이 특히 선명하고, 그 안에서도 ${pokemonName}와 가장 비슷한 배틀 감각을 가진 결과로 매칭되었습니다.`;
   }
@@ -116,7 +120,7 @@ function getElementDescription(typeResult, matchResult) {
 }
 
 function renderTypeChips(types) {
-  return types
+  return [...new Set(types)]
     .map((type) => `<span class="type-chip type-${type}">${TYPE_KO_NAMES[type] ?? type}</span>`)
     .join("");
 }

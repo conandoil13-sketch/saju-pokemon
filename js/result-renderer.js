@@ -315,11 +315,11 @@ function getCapturePokemonBlock(matchResult) {
 
   return `
     <div class="capture-mystery-layout">
-      <div class="capture-mystery-mark">DATA</div>
+      <div class="capture-mystery-mark">???</div>
       <div>
-        <strong>TYPE FOUND</strong>
-        <h3>타입 계산 완료</h3>
-        <p>도감 후보 확인 필요</p>
+        <strong>UNSEEN</strong>
+        <h3>미발견 포켓몬</h3>
+        <p>아직 연결되지 않은 도감 신호</p>
       </div>
     </div>
   `;
@@ -645,14 +645,16 @@ function renderUnusedResult(sajuResult, typeResult, matchResult) {
 function renderDataMissingResult(sajuResult, typeResult, matchResult) {
   return `
     <div class="final-result-hero is-missing">
-      <p class="result-label">도감 데이터 확인 필요</p>
+      <p class="result-label">도감 미확인 타입</p>
       <div class="pokemon-title-row">
-        <strong>DATA</strong>
-        <h3>타입은 계산되었습니다</h3>
+        <strong>??? 타입</strong>
+        <h3>미발견 포켓몬</h3>
       </div>
+      <p class="pokemon-en-name">Unseen Pokemon Signal</p>
       <div class="type-chip-row">${renderTypeChips([typeResult.primaryType, typeResult.secondaryType])}</div>
-      <p>현재 불러온 도감 데이터에서 이 타입 조합 후보를 찾지 못했습니다.</p>
-      <p>API 데이터 범위, 특수 폼, fallback 데이터 부족 때문에 발생할 수 있습니다. 다시 시도하거나 네트워크 연결을 확인해주세요.</p>
+      <p class="result-quote">“도감 신호는 잡혔지만, 아직 이름이 등록되지 않은 타입입니다.”</p>
+      <p>당신의 오행 타입은 만들어졌지만, 현재 불러온 도감에서는 이 신호와 딱 맞는 포켓몬을 찾지 못했습니다.</p>
+      <p>공식 도감에 없는 조합이거나 특수 폼, 데이터 범위 문제일 수 있습니다. 팬메이드 결과에서는 미발견 포켓몬으로 기록됩니다.</p>
     </div>
     ${renderMetaGrid(sajuResult, typeResult, matchResult)}
   `;

@@ -17,16 +17,52 @@ const ELEMENT_KO_NAMES = {
 };
 
 const ELEMENT_COPY = {
-  목화형: "자라나는 힘에 불이 붙은 타입",
-  화목형: "먼저 타오르고 나중에 뻗어나가는 타입",
-  토금형: "단단하게 쌓아 날카롭게 다듬는 타입",
-  수화형: "차가운 직감과 뜨거운 폭발성이 공존하는 타입",
-  금수형: "차갑고 예리한 흐름을 가진 타입",
-  토토형: "중심이 강하고 쉽게 흔들리지 않는 타입",
-  금금형: "차갑고 단단한 희귀 결정체 같은 타입",
-  목목형: "계속 자라고 번지는 생명력의 타입",
-  화화형: "두 번 타오르는 폭발형 타입",
-  수수형: "깊고 조용하게 흐르는 잠재성의 타입",
+  목목형: "회복과 성장 스택을 차곡차곡 쌓는 숲의 타입",
+  목화형: "잎사귀에 스파크가 튀듯 앞으로 뻗는 돌진 타입",
+  목토형: "필드에 뿌리내리고 자기 영역을 넓히는 타입",
+  목금형: "부드럽게 자라나면서도 반짝이는 날을 숨긴 타입",
+  목수형: "비를 머금고 다시 살아나는 회복형 타입",
+  화목형: "불꽃 추진력으로 하늘까지 치고 오르는 타입",
+  화화형: "시작부터 끝까지 화력이 꺼지지 않는 타입",
+  화토형: "뜨거운 에너지를 단단한 한 방으로 바꾸는 타입",
+  화금형: "번개처럼 튀고 강철처럼 꽂히는 타입",
+  화수형: "뜨거운 승부욕과 차가운 판단이 번갈아 나오는 타입",
+  토목형: "느긋해 보여도 꾸준히 필드를 장악하는 타입",
+  토화형: "땅속 열기를 모아 한 번에 터뜨리는 타입",
+  토토형: "방어 랭크가 쉽게 내려가지 않는 묵직한 타입",
+  토금형: "단단한 몸체를 날카로운 장점으로 다듬는 타입",
+  토수형: "흐름을 읽고 자기 페이스로 끌고 가는 타입",
+  금목형: "차분한 표정 뒤에 날카로운 반격을 숨긴 타입",
+  금화형: "차가운 집중력에 순간 화력이 붙는 타입",
+  금토형: "단단한 베이스 위에서 빛나는 방어형 타입",
+  금금형: "얼음 결정처럼 차갑고 단단한 희귀 타입",
+  금수형: "예리한 감각으로 흐름을 가르는 타입",
+  수목형: "조용히 회복하고 어느새 크게 자라나는 타입",
+  수화형: "차가운 직감과 뜨거운 필살기가 공존하는 타입",
+  수토형: "깊은 물살처럼 상대의 템포를 흔드는 타입",
+  수금형: "맑은 물결 위로 날카로운 빛이 스치는 타입",
+  수수형: "깊고 조용하게 잠재력을 모으는 타입",
+};
+
+const TYPE_PERSONALITY = {
+  normal: "어디서든 페이스를 잃지 않는 안정감",
+  fire: "불꽃타입의 강렬한 추진력",
+  water: "물타입의 유연한 적응력",
+  electric: "전기타입의 빠른 반응 속도",
+  grass: "풀타입의 회복력과 성장성",
+  ice: "얼음타입의 차분한 집중력",
+  fighting: "격투타입의 정면 승부 기질",
+  poison: "독타입의 예측하기 어려운 변수감",
+  ground: "땅타입의 묵직한 버티는 힘",
+  flying: "비행타입의 자유로운 상승감",
+  psychic: "에스퍼타입의 직감과 읽는 힘",
+  bug: "벌레타입의 끈질긴 생존력",
+  rock: "바위타입의 단단한 방어감",
+  ghost: "고스트타입의 신비로운 존재감",
+  dragon: "드래곤타입의 큰 스케일과 잠재력",
+  dark: "악타입의 흔들리지 않는 독자성",
+  steel: "강철타입의 정교하고 단단한 완성도",
+  fairy: "페어리타입의 의외성과 반짝이는 매력",
 };
 
 const DATA_SOURCE_LABELS = {
@@ -47,18 +83,36 @@ function formatBirthTime(inputData) {
 }
 
 function getElementCopy(typeResult) {
-  return ELEMENT_COPY[typeResult.elementLabel] ?? "서로 다른 기운이 섞여 만들어진 복합 타입";
+  return (
+    ELEMENT_COPY[typeResult.elementLabel] ??
+    `${typeResult.typeNamesKo.join(" / ")} 타입의 개성이 섞인 복합 타입`
+  );
 }
 
-function getElementDescription(typeResult) {
-  const primary = ELEMENT_KO_NAMES[typeResult.primaryElement];
-  const secondary = ELEMENT_KO_NAMES[typeResult.secondaryElement];
+function getTypePersonality(type) {
+  return TYPE_PERSONALITY[type] ?? `${TYPE_KO_NAMES[type] ?? type}타입의 개성`;
+}
 
-  if (typeResult.primaryElement === typeResult.secondaryElement) {
-    return `당신의 사주 구조에서는 ${primary}의 기운이 강하게 모여 있습니다. 그래서 같은 오행 안에서도 서로 다른 결을 가진 ${typeResult.typeNamesKo.join("/")} 타입으로 매칭되었습니다.`;
+function getPokemonDisplayName(matchResult) {
+  if (matchResult?.status !== "matched") {
+    return "이 타입 조합";
   }
 
-  return `당신의 사주 구조에서는 ${primary}의 중심성과 ${secondary}의 보조 흐름이 함께 나타납니다. 그래서 ${typeResult.typeNamesKo.join("/")} 타입의 포켓몬과 가장 가까운 결로 매칭되었습니다.`;
+  return matchResult.pokemon.nameKo;
+}
+
+function getElementDescription(typeResult, matchResult) {
+  const primaryTypeName = TYPE_KO_NAMES[typeResult.primaryType] ?? typeResult.primaryType;
+  const secondaryTypeName = TYPE_KO_NAMES[typeResult.secondaryType] ?? typeResult.secondaryType;
+  const primaryTrait = getTypePersonality(typeResult.primaryType);
+  const secondaryTrait = getTypePersonality(typeResult.secondaryType);
+  const pokemonName = getPokemonDisplayName(matchResult);
+
+  if (typeResult.primaryElement === typeResult.secondaryElement) {
+    return `당신의 타입 에너지는 ${primaryTypeName}/${secondaryTypeName} 계열에 강하게 몰려 있습니다. ${primaryTrait}이 특히 선명하고, 그 안에서도 ${pokemonName}와 가장 비슷한 배틀 감각을 가진 결과로 매칭되었습니다.`;
+  }
+
+  return `당신에게서는 ${primaryTrait}과 ${secondaryTrait}이 함께 나타납니다. 그래서 ${primaryTypeName}/${secondaryTypeName} 타입의 결을 가진 포켓몬 중에서도 ${pokemonName}와 가장 비슷한 성향으로 매칭되었습니다.`;
 }
 
 function renderTypeChips(types) {
@@ -560,8 +614,8 @@ function renderMatchedResult(inputData, sajuResult, typeResult, matchResult) {
       </div>
       <div class="type-chip-row">${renderTypeChips(matchResult.pokemon.types)}</div>
       <p class="result-quote">“${getElementCopy(typeResult)}”</p>
-      <p>${getElementDescription(typeResult)}</p>
-      <p>같은 타입 후보 중 생년월일시 seed를 기준으로 고정 매칭되었습니다.</p>
+      <p>${getElementDescription(typeResult, matchResult)}</p>
+      <p>${matchResult.pokemon.nameKo} 외에도 같은 타입 후보가 ${matchResult.candidatesCount}마리 있었고, 생년월일시 seed로 지금의 포켓몬이 고정 선택되었습니다.</p>
     </div>
     ${renderMetaGrid(sajuResult, typeResult, matchResult)}
   `;
